@@ -31,11 +31,21 @@ export class ManageProductsService extends ApiService {
 
   private getPreSignedUrl(fileName: string): Observable<{ url: string }> {
     const url = this.getUrl('import', 'import');
-
-    return this.http.get<{ url: string }>(url, {
+    const token = localStorage.getItem('authorization_token')
+    const options = {
       params: {
         name: fileName,
       },
-    });
+      headers: {}
+    }
+
+    if (token) {
+      options.headers = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'Authorization': `Basic ${token}`
+      }
+    }
+
+    return this.http.get<{ url: string }>(url, options);
   }
 }
